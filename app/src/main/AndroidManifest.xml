@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.uni_koeln.phil_fak.spinfo.javamobile.picman" >
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -19,6 +25,14 @@
         <activity
             android:name=".activity.PicManActivity"
             android:label="@string/title_activity_pic_man" >
+        </activity>
+        <activity
+            android:name=".activity.PicDetailsActivity"
+            android:label="@string/title_activity_pic_details"
+            android:parentActivityName=".activity.PicManActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.uni_koeln.phil_fak.spinfo.javamobile.picman.PicManActivity" />
         </activity>
     </application>
 
