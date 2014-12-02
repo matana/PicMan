@@ -6,11 +6,11 @@ import android.graphics.Bitmap;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
+import java.io.ObjectOutputStream;
 
-/**
- * Created by matana on 27.11.14.
- */
+import de.uni_koeln.phil_fak.spinfo.javamobile.picman.data.PicItem;
+
+
 public class ImageHelper {
 
     private static ImageHelper instance;
@@ -25,43 +25,50 @@ public class ImageHelper {
         return instance;
     }
 
-    public void saveImageData(Context context, StorageManager storageManager, Bitmap picture, String text) {
-
-        File imgDir = storageManager.createPublicStorageDir();
-        File dataDir = storageManager.createPrivateStorageDir();
-
-        //Bedingungen prüfen
+    public void saveImageData(Context context, StorageManager storageManager, Bitmap picture, String text, String date) {
+        //speicher prüfen
         if (!storageManager.isStorageAvailable()){
             Toaster.toastWrap(context, "Externer Speicher nicht verfügbar!");
             return;
         }
 
-        //Speichern
-        FileOutputStream out = null;
+        //daten vorbereiten
+        File imgDir = storageManager.createPublicStorageDir();
+        File dataDir = storageManager.createPrivateStorageDir();
+        PicItem picItem;
+        ObjectOutputStream oos;
         String imageID = "IMG_" + TimeStamper.getInstance().generateTimestamp(false);
+        String imagePath = null;
+        String picItemPath = null;
 
+        //img-pfad festlegen
+        try {
+            imagePath = imgDir.getCanonicalPath() + "/" + imageID + ".png";
+            picItemPath = dataDir.getCanonicalPath() + "/" + imageID + ".pic";
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        //PicItem-objekt erstellen
+        picItem = new PicItem(imageID,
+                              imagePath,
+                              text,
+                              date);
+
+        //bild speichern
         try{
-
-            //Bild
-            out = new FileOutputStream(imgDir.getCanonicalPath() + "/" + imageID + ".png");
-            picture.compress(Bitmap.CompressFormat.PNG, 90, out);
-            out.close();
-
-            //Meta-Daten
-            out = new FileOutputStream(dataDir.getCanonicalPath() + "/" + imageID + ".txt");
-            out.write(text.getBytes());
-
+            picture.compress(Bitmap.CompressFormat.PNG, 90, new FileOutputStream(imagePath));
         } catch (Exception e){
             e.printStackTrace();
-        } finally {
-            try{
-                if (out != null){
-                    out.close();
-                }
-            } catch (IOException e){
-                e.printStackTrace();
-            }
+        }
+
+        //PicItem-objekt speichern
+        try {
+            oos = new ObjectOutputStream(new FileOutputStream(picItemPath));
+            oos.writeObject(picItem);
+            oos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
