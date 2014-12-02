@@ -25,7 +25,7 @@ public class PicManActivity extends ActionBarActivity implements DeleteDialogFra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pic_man);
-        dataProvider = new DataProvider(new StorageManager(getApplicationContext()));
+        dataProvider = new DataProvider(new StorageManager(getApplicationContext()), getApplicationContext());
         ListView listView = (ListView) findViewById(R.id.pic_list);
         dataProvider.loadPicData(getApplicationContext(), getFragmentManager(), listView);
     }

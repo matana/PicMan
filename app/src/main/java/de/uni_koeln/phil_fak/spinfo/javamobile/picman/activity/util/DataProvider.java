@@ -14,6 +14,7 @@ import java.io.FilenameFilter;
 import java.io.ObjectInputStream;
 import java.util.Arrays;
 
+import de.uni_koeln.phil_fak.spinfo.javamobile.picman.R;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.DeleteDialogFragment;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.data.PicItem;
 
@@ -21,12 +22,14 @@ import de.uni_koeln.phil_fak.spinfo.javamobile.picman.data.PicItem;
 public class DataProvider {
 
     private final File commentDir;
+    private Context context;
 
     private Bitmap[] images;
     private String[] descriptions;
 
-    public DataProvider(StorageManager storageManager) {
+    public DataProvider(StorageManager storageManager, Context context) {
         commentDir = storageManager.createPrivateStorageDir();
+        this.context = context;
     }
 
     public void loadPicData(final Context context, final FragmentManager fragmentManager, ListView listView) {
@@ -53,8 +56,11 @@ public class DataProvider {
             try {
                 ois = new ObjectInputStream(new FileInputStream(dataFiles[i]));
                 picItem = (PicItem) ois.readObject();
-                images[i] = BitmapFactory.decodeFile(picItem.getData(PicItem.ITEM_IMG_PATH));
                 descriptions[i] = picItem.getDisplayString();
+                if ((images[i] = BitmapFactory.decodeFile(picItem.getData(PicItem.ITEM_IMG_PATH))) == null) {
+                    images[i] = BitmapFactory.decodeResource(context.getResources(), R.drawable.error);
+                    descriptions[i] += "\n(image deleted!)";
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -80,7 +86,6 @@ public class DataProvider {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                //Toaster.toastWrap(context, parent.getAdapter().getItem(position).toString());
                 Toaster.toastWrap(context, descriptions[position]);
                 DeleteDialogFragment deleteDialog = new DeleteDialogFragment();
                 deleteDialog.setTextData(descriptions[position]);
