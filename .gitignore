@@ -15,7 +15,7 @@ gen/
 # Gradle files
 .gradle/
 gradle/
-gradle.properties
+#gradle.properties
 gradlew
 gradlew.bat
 settings.gradle
@@ -31,5 +31,5 @@ proguard/
 *.log
 
 # Android Studio
-.idea
+#.idea
 
