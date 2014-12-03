@@ -66,6 +66,7 @@ public class PicDetailsActivity extends ActionBarActivity {
         Intent intent = new Intent(this, PicManActivity.class);
         startActivity(intent);
         Toaster.toastWrap(getApplicationContext(), "Image saved...");
+        finish();
     }
 
     public Bitmap getPicture() {
