@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -47,8 +48,7 @@ public class DataProvider {
 
         images = new Bitmap[imgFiles.length];
         descriptions = new String[dataFiles.length];
-        Log.d(getClass().getSimpleName(), "IMAGES::LENGTH " + images.length);
-        Log.d(getClass().getSimpleName(), "DESC::LENGTH " + descriptions.length);
+
         try {
 
             for (int i = 0; i < images.length; i++)
@@ -81,12 +81,15 @@ public class DataProvider {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                //Toaster.toastWrap(context, parent.getAdapter().getItem(position).toString());
-                Toaster.toastWrap(context, descriptions[position]);
+                Toaster.toastWrap(context, position + "");
                 DeleteDialogFragment deleteDialog = new DeleteDialogFragment();
-                deleteDialog.setTextData(descriptions[position]);
-                deleteDialog.setImageData(images[position]);
-                deleteDialog.setPosition(position);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("textData", descriptions[position]);
+                bundle.putParcelable("imageData", images[position]);
+                bundle.putInt("position", position);
+                deleteDialog.onCreate(bundle);
+
                 deleteDialog.show(fragmentManager, "Delete Image Data Dialog");
                 return true;
             }

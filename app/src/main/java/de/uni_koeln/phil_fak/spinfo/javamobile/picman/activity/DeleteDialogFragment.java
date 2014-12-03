@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,17 +25,7 @@ public class DeleteDialogFragment extends DialogFragment {
     private String textData;
     private Bitmap imageData;
 
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-    public void setTextData(String textData) {
-        this.textData = textData;
-    }
-
-    public void setImageData(Bitmap imageData) {
-        this.imageData = imageData;
-    }
+    DeleteDialogFragmentListener listener;
 
     public interface DeleteDialogFragmentListener {
 
@@ -43,48 +34,35 @@ public class DeleteDialogFragment extends DialogFragment {
 
     }
 
-
-    DeleteDialogFragmentListener listener;
-
-
-//    @Override
-//    public Dialog onCreateDialog(Bundle savedInstanceState) {
-//
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//
-//        builder.setMessage(R.string.delete_message)
-//                .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        // Delete image
-//                    }
-//                })
-//                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        // User cancelled the dialog
-//                    }
-//                });
-//
-//        return builder.create();
-//    }
-
     @Override
     public void onAttach(Activity activity) {
+
         super.onAttach(activity);
 
         try {
-            // Instanziierung des NoticeDialogListeners via Casting
             listener = (DeleteDialogFragmentListener) activity;
         } catch (ClassCastException e) {
-            // Die Activity implementiert nicht das Interface "DeleteDialogFragmentListener", folglich wird
-            // eine ClassCastException geworfen.
-            throw new ClassCastException(activity.toString()
-                    + " must implement DeleteDialogFragmentListener");
+            throw new ClassCastException(activity.toString() + " must implement DeleteDialogFragmentListener");
+        }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+
+        if(savedInstanceState != null) {
+            position = savedInstanceState.getInt("position");
+            textData =  savedInstanceState.getString("textData");
+            imageData = savedInstanceState.getParcelable("imageData");
         }
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+       // Log.i(getClass().getSimpleName(), "DeleteDialogFragment onCreateView called... ");
 
         getDialog().setTitle(R.string.delete_message);
 
@@ -107,6 +85,16 @@ public class DeleteDialogFragment extends DialogFragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        Log.i(getClass().getSimpleName(), "onSaveInstanceState... " + textData);
+        outState.putString("textData", textData);
+        outState.putParcelable("imageData", imageData);
+        outState.putInt("position", position);
+
     }
 
 }
