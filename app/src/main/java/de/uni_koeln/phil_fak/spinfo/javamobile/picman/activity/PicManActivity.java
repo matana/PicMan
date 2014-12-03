@@ -69,13 +69,13 @@ public class PicManActivity extends ActionBarActivity implements DeleteDialogFra
         }
     }
 
-    public void delete(View view) {
-        Toaster.toastWrap(getApplicationContext(), "Deleting image...");
-    }
-
     @Override
     public void onDialogPositiveClick(DialogFragment dialog, int position) {
-        Toaster.toastWrap(getApplicationContext(), "Delete Image with ID=" + position);
+        dataProvider.deleteItem(position);
+        ListView listView = (ListView) findViewById(R.id.pic_list);
+        dataProvider.loadPicData(getApplicationContext(), getFragmentManager(), listView);
+        Toaster.toastWrap(getApplicationContext(), "Item deleted.");
+
         dialog.dismiss();
     }
 

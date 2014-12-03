@@ -31,7 +31,7 @@ public class PicItem implements Serializable{
     }
 
     public String getDisplayString(){
-        return data.get(ITEM_DATE) + "\n" + data.get(ITEM_COMMENT);
+        return data.get(ITEM_DATE) + data.get(ITEM_COMMENT);
     }
 
     @Override

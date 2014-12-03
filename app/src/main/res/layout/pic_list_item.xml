@@ -6,8 +6,13 @@
     android:layout_height="match_parent">
 
     <TableRow android:layout_width="match_parent">
-        <ImageView android:id="@+id/pic_thumb"/>
-        <TextView android:id="@+id/pic_desc"/>
+        <ImageView android:id="@+id/pic_thumb"
+                   android:layout_height="60dp"/>
+        <TextView android:id="@+id/pic_desc"
+                  android:layout_marginLeft="5dp"
+                  android:layout_marginRight="5dp"
+                  android:layout_gravity="center_vertical"
+                  android:textColor="#000000"/>
     </TableRow>
 
 </TableLayout>

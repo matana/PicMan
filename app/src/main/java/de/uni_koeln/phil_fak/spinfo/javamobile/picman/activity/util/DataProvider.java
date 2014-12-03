@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -21,24 +22,20 @@ import de.uni_koeln.phil_fak.spinfo.javamobile.picman.data.PicItem;
 
 public class DataProvider {
 
-    private final File commentDir;
+    private ListViewAdapter adapter;
+    private final File itemDataDir;
     private Context context;
 
     private Bitmap[] images;
     private String[] descriptions;
 
     public DataProvider(StorageManager storageManager, Context context) {
-        commentDir = storageManager.createPrivateStorageDir();
+        itemDataDir = storageManager.createPrivateStorageDir();
         this.context = context;
     }
 
     public void loadPicData(final Context context, final FragmentManager fragmentManager, ListView listView) {
-        File[] dataFiles = commentDir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String filename) {
-                return filename.endsWith(".pic");
-            }
-        });
+        File[] dataFiles = getItemDataFiles();
 
         if(dataFiles != null && dataFiles.length > 0) {
             loadPicData(context, fragmentManager, listView, dataFiles);
@@ -46,7 +43,6 @@ public class DataProvider {
     }
 
     private void loadPicData(final Context context, final FragmentManager fragmentManager, ListView listView, File[] dataFiles) {
-        ObjectInputStream ois;
         PicItem picItem;
         Arrays.sort(dataFiles);
         images = new Bitmap[dataFiles.length];
@@ -54,8 +50,7 @@ public class DataProvider {
 
         for (int i = 0; i < dataFiles.length; i++){
             try {
-                ois = new ObjectInputStream(new FileInputStream(dataFiles[i]));
-                picItem = (PicItem) ois.readObject();
+                picItem = deserializeItem(dataFiles[i]);
                 descriptions[i] = picItem.getDisplayString();
                 if ((images[i] = BitmapFactory.decodeFile(picItem.getData(PicItem.ITEM_IMG_PATH))) == null) {
                     images[i] = BitmapFactory.decodeResource(context.getResources(), R.drawable.error);
@@ -69,9 +64,33 @@ public class DataProvider {
         provideListView(context, fragmentManager,  listView);
     }
 
-    private void provideListView(final Context context, final FragmentManager fragmentManager, ListView listView) {
+    public void deleteItem(int pos){
+        File toDelete = getItemDataFiles()[pos];
+        PicItem item = deserializeItem(toDelete);
+        File imgFile = new File(item.getData(PicItem.ITEM_IMG_PATH));
+        if (imgFile.exists()) imgFile.delete();
+        toDelete.delete();
+    }
 
-        ListViewAdapter adapter = new ListViewAdapter(context, descriptions, images);
+    public ListViewAdapter getListAdapter(){
+        return adapter;
+    }
+
+    private PicItem deserializeItem(File itemFile){
+        ObjectInputStream ois;
+        PicItem item = null;
+        try {
+            ois = new ObjectInputStream(new FileInputStream(itemFile));
+            item = (PicItem) ois.readObject();
+            ois.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return item;
+    }
+
+    private void provideListView(final Context context, final FragmentManager fragmentManager, ListView listView) {
+        adapter = new ListViewAdapter(context, descriptions, images);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -93,6 +112,15 @@ public class DataProvider {
                 deleteDialog.setPosition(position);
                 deleteDialog.show(fragmentManager, "Delete Image Data Dialog");
                 return true;
+            }
+        });
+    }
+
+    private File[] getItemDataFiles(){
+        return itemDataDir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String filename) {
+                return filename.endsWith(".pic");
             }
         });
     }

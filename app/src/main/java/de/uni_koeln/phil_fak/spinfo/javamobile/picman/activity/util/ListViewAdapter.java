@@ -21,7 +21,6 @@ public class ListViewAdapter extends ArrayAdapter<String> {
     private final Bitmap[] img;
 
     public ListViewAdapter(Context context, String[] desc, Bitmap[] img) {
-
         super(context, R.layout.pic_list_item, desc);
 
         this.context = context;
