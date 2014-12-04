@@ -97,10 +97,10 @@ public class DataProvider {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Toaster.toastWrap(context, items.get(position).getDisplayString());
+                //Toaster.toastWrap(context, items.get(position).getDisplayString());
                 DeleteDialogFragment deleteDialog = new DeleteDialogFragment();
                 deleteDialog.setTextData(items.get(position).getDisplayString());
-                deleteDialog.setImageData(BitmapFactory.decodeFile(items.get(position).getDisplayString()));
+                deleteDialog.setImageData(BitmapFactory.decodeFile(items.get(position).getData(PicItem.ITEM_IMG_PATH)));
                 deleteDialog.setPosition(position);
                 deleteDialog.show(fragmentManager, "Delete Image Data Dialog");
                 return true;
