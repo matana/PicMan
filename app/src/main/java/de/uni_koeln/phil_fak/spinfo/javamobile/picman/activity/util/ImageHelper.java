@@ -51,6 +51,7 @@ public class ImageHelper {
 
         //PicItem-objekt erstellen
         picItem = new PicItem(imageID,
+                              picItemPath,
                               imagePath,
                               text,
                               date);

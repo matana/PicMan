@@ -13,7 +13,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.R;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.DeleteDialogFragment;
@@ -26,10 +28,10 @@ public class DataProvider {
     private final File itemDataDir;
     private Context context;
 
-    private Bitmap[] images;
-    private String[] descriptions;
+    List<PicItem> items;
 
     public DataProvider(StorageManager storageManager, Context context) {
+        items = new ArrayList<PicItem>();
         itemDataDir = storageManager.createPrivateStorageDir();
         this.context = context;
     }
@@ -43,19 +45,12 @@ public class DataProvider {
     }
 
     private void loadPicData(final Context context, final FragmentManager fragmentManager, ListView listView, File[] dataFiles) {
-        PicItem picItem;
         Arrays.sort(dataFiles);
-        images = new Bitmap[dataFiles.length];
-        descriptions = new String[dataFiles.length];
 
-        for (int i = 0; i < dataFiles.length; i++){
+        for (File f : dataFiles){
             try {
-                picItem = deserializeItem(dataFiles[i]);
-                descriptions[i] = picItem.getDisplayString();
-                if ((images[i] = BitmapFactory.decodeFile(picItem.getData(PicItem.ITEM_IMG_PATH))) == null) {
-                    images[i] = BitmapFactory.decodeResource(context.getResources(), R.drawable.error);
-                    descriptions[i] += "\n(image deleted!)";
-                }
+                PicItem item = deserializeItem(f);
+                if (item != null) items.add(item);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -64,16 +59,13 @@ public class DataProvider {
         provideListView(context, fragmentManager,  listView);
     }
 
-    public void deleteItem(int pos){
-        File toDelete = getItemDataFiles()[pos];
-        PicItem item = deserializeItem(toDelete);
+    public PicItem deleteItem(int pos){
+        PicItem item = items.get(pos);
+        File itemFile = new File(item.getData(PicItem.ITEM_PATH));
         File imgFile = new File(item.getData(PicItem.ITEM_IMG_PATH));
         if (imgFile.exists()) imgFile.delete();
-        toDelete.delete();
-    }
-
-    public ListViewAdapter getListAdapter(){
-        return adapter;
+        if (itemFile.exists()) itemFile.delete();
+        return item;
     }
 
     private PicItem deserializeItem(File itemFile){
@@ -90,7 +82,7 @@ public class DataProvider {
     }
 
     private void provideListView(final Context context, final FragmentManager fragmentManager, ListView listView) {
-        adapter = new ListViewAdapter(context, descriptions, images);
+        adapter = new ListViewAdapter(context, items);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -105,10 +97,10 @@ public class DataProvider {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Toaster.toastWrap(context, descriptions[position]);
+                Toaster.toastWrap(context, items.get(position).getDisplayString());
                 DeleteDialogFragment deleteDialog = new DeleteDialogFragment();
-                deleteDialog.setTextData(descriptions[position]);
-                deleteDialog.setImageData(images[position]);
+                deleteDialog.setTextData(items.get(position).getDisplayString());
+                deleteDialog.setImageData(BitmapFactory.decodeFile(items.get(position).getDisplayString()));
                 deleteDialog.setPosition(position);
                 deleteDialog.show(fragmentManager, "Delete Image Data Dialog");
                 return true;
@@ -120,7 +112,7 @@ public class DataProvider {
         return itemDataDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String filename) {
-                return filename.endsWith(".pic");
+                return dir.exists() && filename.endsWith(".pic");
             }
         });
     }

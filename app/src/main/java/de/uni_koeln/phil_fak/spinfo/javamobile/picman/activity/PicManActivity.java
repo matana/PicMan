@@ -13,6 +13,7 @@ import android.widget.ListView;
 
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.R;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.DataProvider;
+import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.ListViewAdapter;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.StorageManager;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.Toaster;
 
@@ -71,11 +72,10 @@ public class PicManActivity extends ActionBarActivity implements DeleteDialogFra
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog, int position) {
-        dataProvider.deleteItem(position);
         ListView listView = (ListView) findViewById(R.id.pic_list);
-        dataProvider.loadPicData(getApplicationContext(), getFragmentManager(), listView);
-        Toaster.toastWrap(getApplicationContext(), "Item deleted.");
+        ((ListViewAdapter)listView.getAdapter()).remove(dataProvider.deleteItem(position));
 
+        Toaster.toastWrap(getApplicationContext(), "Item deleted.");
         dialog.dismiss();
     }
 
