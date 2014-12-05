@@ -1,5 +1,6 @@
 package de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity;
 
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,7 +18,7 @@ import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.ListViewAdap
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.StorageManager;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.Toaster;
 
-public class PicManActivity extends ActionBarActivity implements DeleteDialogFragment.DeleteDialogFragmentListener {
+public class PicManActivity extends Activity implements DeleteDialogFragment.DeleteDialogFragmentListener {
 
 
     private DataProvider dataProvider;

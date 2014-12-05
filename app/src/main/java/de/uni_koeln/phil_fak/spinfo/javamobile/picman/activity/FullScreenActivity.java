@@ -1,5 +1,6 @@
 package de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
@@ -11,7 +12,7 @@ import android.widget.TextView;
 
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.R;
 
-public class FullScreenActivity extends ActionBarActivity {
+public class FullScreenActivity extends Activity {
 
     private ImageView imageView;
     private TextView text;
