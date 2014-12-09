@@ -1,6 +1,5 @@
 package de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity;
 
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,7 +17,7 @@ import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.ListViewAdap
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.StorageManager;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.Toaster;
 
-public class PicManActivity extends Activity implements DeleteDialogFragment.DeleteDialogFragmentListener {
+public class PicManActivity extends ActionBarActivity implements DeleteDialogFragment.DeleteDialogFragmentListener {
 
 
     private DataProvider dataProvider;
@@ -27,9 +26,9 @@ public class PicManActivity extends Activity implements DeleteDialogFragment.Del
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pic_man);
-        dataProvider = new DataProvider(new StorageManager(getApplicationContext()), getApplicationContext());
+        dataProvider = new DataProvider(new StorageManager(getApplicationContext()));
         ListView listView = (ListView) findViewById(R.id.pic_list);
-        dataProvider.loadPicData(getApplicationContext(), getFragmentManager(), listView);
+        dataProvider.loadPicData(this, getFragmentManager(), listView);
     }
 
     @Override

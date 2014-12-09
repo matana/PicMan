@@ -11,7 +11,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/imageView"
+        android:id="@+id/fullscreen_image_view"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -23,10 +23,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
-        android:id="@+id/textView"
-        android:layout_alignBottom="@+id/imageView"
-        android:layout_alignRight="@+id/imageView"
-        android:layout_alignEnd="@+id/imageView"
+        android:id="@+id/fullscreen_text_view"
+        android:layout_alignBottom="@id/fullscreen_image_view"
+        android:layout_alignRight="@id/fullscreen_image_view"
+        android:layout_alignEnd="@id/fullscreen_image_view"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:gravity="center_horizontal"/>

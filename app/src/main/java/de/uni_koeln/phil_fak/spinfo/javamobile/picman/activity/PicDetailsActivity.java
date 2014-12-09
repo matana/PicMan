@@ -1,6 +1,5 @@
 package de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -18,7 +17,7 @@ import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.TimeStamper;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.Toaster;
 
 
-public class PicDetailsActivity extends Activity {
+public class PicDetailsActivity extends ActionBarActivity {
 
     private Bitmap pic;
     private String pic_details;

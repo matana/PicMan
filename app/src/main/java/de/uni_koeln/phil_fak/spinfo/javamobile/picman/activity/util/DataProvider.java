@@ -2,10 +2,9 @@ package de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util;
 
 import android.app.FragmentManager;
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -17,8 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import de.uni_koeln.phil_fak.spinfo.javamobile.picman.R;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.DeleteDialogFragment;
+import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.FullScreenActivity;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.data.PicItem;
 
 
@@ -26,14 +25,12 @@ public class DataProvider {
 
     private ListViewAdapter adapter;
     private final File itemDataDir;
-    private Context context;
 
     List<PicItem> items;
 
-    public DataProvider(StorageManager storageManager, Context context) {
+    public DataProvider(StorageManager storageManager) {
         items = new ArrayList<PicItem>();
         itemDataDir = storageManager.createPrivateStorageDir();
-        this.context = context;
     }
 
     public void loadPicData(final Context context, final FragmentManager fragmentManager, ListView listView) {
@@ -88,8 +85,11 @@ public class DataProvider {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Intent call ....
-                Toaster.toastWrap(context, parent.getAdapter().getItem(position).toString());
+                Intent intent = new Intent(context, FullScreenActivity.class);
+                intent.putExtra("pic",items.get(position).getData(PicItem.ITEM_IMG_PATH));
+                intent.putExtra("desc",items.get(position).getDisplayString());
+                context.startActivity(intent);
+                //Toaster.toastWrap(context, parent.getAdapter().getItem(position).toString());
             }
         });
 

@@ -3,7 +3,7 @@ package de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.support.v7.app.ActionBarActivity;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,8 +21,8 @@ public class FullScreenActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_screen);
-        imageView = (ImageView)findViewById(R.id.image_view);
-        text = (TextView)findViewById(R.id.pic_details_timestamp);
+        imageView = (ImageView)findViewById(R.id.fullscreen_image_view);
+        text = (TextView)findViewById(R.id.fullscreen_text_view);
     }
 
 
@@ -31,7 +31,7 @@ public class FullScreenActivity extends Activity {
         super.onStart();
 
         Intent intent = getIntent();
-        Bitmap pic = intent.getParcelableExtra("pic");
+        Bitmap pic = BitmapFactory.decodeFile(intent.getStringExtra("pic"));
         String desc = intent.getStringExtra("desc");
 
         imageView.setImageBitmap(pic);
