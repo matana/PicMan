@@ -6,7 +6,7 @@
         android:name="android.hardware.camera"
         android:required="true" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -29,10 +29,18 @@
         <activity
             android:name=".activity.PicDetailsActivity"
             android:label="@string/title_activity_pic_details"
-            android:parentActivityName=".activity.PicManActivity">
+            android:parentActivityName=".activity.PicManActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.uni_koeln.phil_fak.spinfo.javamobile.picman.PicManActivity" />
+        </activity>
+        <activity
+            android:name=".activity.FullScreenActivity"
+            android:label="@string/title_activity_full_screen"
+            android:parentActivityName=".activity.PicManActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.PicManActivity" />
         </activity>
     </application>
 

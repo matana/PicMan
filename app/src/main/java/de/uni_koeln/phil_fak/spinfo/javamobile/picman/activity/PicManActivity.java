@@ -13,6 +13,7 @@ import android.widget.ListView;
 
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.R;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.DataProvider;
+import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.ListViewAdapter;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.StorageManager;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.Toaster;
 
@@ -27,7 +28,7 @@ public class PicManActivity extends ActionBarActivity implements DeleteDialogFra
         setContentView(R.layout.activity_pic_man);
         dataProvider = new DataProvider(new StorageManager(getApplicationContext()));
         ListView listView = (ListView) findViewById(R.id.pic_list);
-        dataProvider.loadPicData(getApplicationContext(), getFragmentManager(), listView);
+        dataProvider.loadPicData(this, getFragmentManager(), listView);
     }
 
     @Override
@@ -69,13 +70,12 @@ public class PicManActivity extends ActionBarActivity implements DeleteDialogFra
         }
     }
 
-    public void delete(View view) {
-        Toaster.toastWrap(getApplicationContext(), "Deleting image...");
-    }
-
     @Override
     public void onDialogPositiveClick(DialogFragment dialog, int position) {
-        Toaster.toastWrap(getApplicationContext(), "Delete Image with ID=" + position);
+        ListView listView = (ListView) findViewById(R.id.pic_list);
+        ((ListViewAdapter)listView.getAdapter()).remove(dataProvider.deleteItem(position));
+
+        Toaster.toastWrap(getApplicationContext(), "Item deleted.");
         dialog.dismiss();
     }
 

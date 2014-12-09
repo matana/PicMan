@@ -28,7 +28,7 @@ public class PicDetailsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_pic_details);
 
         Intent intent = getIntent();
-        pic = (Bitmap)intent.getParcelableExtra("pic");
+        pic = intent.getParcelableExtra("pic");
 
         ImageView imageView = (ImageView)findViewById(R.id.image_view);
         imageView.setImageBitmap(pic);
@@ -53,16 +53,17 @@ public class PicDetailsActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
     public void saveImage(View view) {
         ImageHelper imageHelper = ImageHelper.getInstance();
         StorageManager storageManager = new StorageManager(getApplicationContext());
-        imageHelper.saveImageData(getApplicationContext(), storageManager, getPicture(), getText());
+        imageHelper.saveImageData(getApplicationContext(),
+                storageManager,
+                getPicture(),
+                getText(),
+                TimeStamper.getInstance().generateTimestamp(true));
         Intent intent = new Intent(this, PicManActivity.class);
         startActivity(intent);
         Toaster.toastWrap(getApplicationContext(), "Image saved...");
@@ -75,7 +76,7 @@ public class PicDetailsActivity extends ActionBarActivity {
 
     public String getText() {
         TextView comment = (TextView) findViewById(R.id.pic_details_comment);
-        return pic_details += " - " + comment.getText();
+        return comment.getText().toString();
     }
 }
 

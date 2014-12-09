@@ -2,78 +2,95 @@ package de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util;
 
 import android.app.FragmentManager;
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FilenameFilter;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.DeleteDialogFragment;
+import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.FullScreenActivity;
+import de.uni_koeln.phil_fak.spinfo.javamobile.picman.data.PicItem;
 
 
-/**
- * Created by matana on 27.11.14.
- */
 public class DataProvider {
 
-    private final File imageDir;
-    private final File commentDir;
+    private ListViewAdapter adapter;
+    private final File itemDataDir;
 
-    private Bitmap[] images;
-    private String[] descriptions;
+    List<PicItem> items;
 
     public DataProvider(StorageManager storageManager) {
-        imageDir = storageManager.createPublicStorageDir();
-        commentDir = storageManager.createPrivateStorageDir();
+        items = new ArrayList<PicItem>();
+        itemDataDir = storageManager.createPrivateStorageDir();
     }
 
     public void loadPicData(final Context context, final FragmentManager fragmentManager, ListView listView) {
+        File[] dataFiles = getItemDataFiles();
 
-        File[] imgFiles = imageDir.listFiles();
-        File[] dataFiles = commentDir.listFiles();
-
-        if(imgFiles != null && dataFiles != null) {
-            loadPicData(context, fragmentManager, listView, imgFiles, dataFiles);
+        if(dataFiles != null && dataFiles.length > 0) {
+            loadPicData(context, fragmentManager, listView, dataFiles);
         }
     }
 
-    private void loadPicData(final Context context, final FragmentManager fragmentManager, ListView listView, File[] imgFiles, File[] dataFiles) {
+    private void loadPicData(final Context context, final FragmentManager fragmentManager, ListView listView, File[] dataFiles) {
+        Arrays.sort(dataFiles);
 
-        images = new Bitmap[imgFiles.length];
-        descriptions = new String[dataFiles.length];
-
-        try {
-
-            for (int i = 0; i < images.length; i++)
-                images[i] = BitmapFactory.decodeFile(imgFiles[i].getCanonicalPath());
-
-            for (int i = 0; i < descriptions.length; i++)
-                descriptions[i] = readFile(dataFiles[i]);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (File f : dataFiles){
+            try {
+                PicItem item = deserializeItem(f);
+                if (item != null) items.add(item);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         provideListView(context, fragmentManager,  listView);
     }
 
-    private void provideListView(final Context context, final FragmentManager fragmentManager, ListView listView) {
+    public PicItem deleteItem(int pos){
+        PicItem item = items.get(pos);
+        File itemFile = new File(item.getData(PicItem.ITEM_PATH));
+        File imgFile = new File(item.getData(PicItem.ITEM_IMG_PATH));
+        if (imgFile.exists()) imgFile.delete();
+        if (itemFile.exists()) itemFile.delete();
+        return item;
+    }
 
-        ListViewAdapter adapter = new ListViewAdapter(context, descriptions, images);
+    private PicItem deserializeItem(File itemFile){
+        ObjectInputStream ois;
+        PicItem item = null;
+        try {
+            ois = new ObjectInputStream(new FileInputStream(itemFile));
+            item = (PicItem) ois.readObject();
+            ois.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return item;
+    }
+
+    private void provideListView(final Context context, final FragmentManager fragmentManager, ListView listView) {
+        adapter = new ListViewAdapter(context, items);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Intent call ....
-                Toaster.toastWrap(context, parent.getAdapter().getItem(position).toString());
+                Intent intent = new Intent(context, FullScreenActivity.class);
+                intent.putExtra("pic",items.get(position).getData(PicItem.ITEM_IMG_PATH));
+                intent.putExtra("desc",items.get(position).getDisplayString());
+                context.startActivity(intent);
+                //Toaster.toastWrap(context, parent.getAdapter().getItem(position).toString());
             }
         });
 
@@ -83,39 +100,24 @@ public class DataProvider {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Toaster.toastWrap(context, position + "");
                 DeleteDialogFragment deleteDialog = new DeleteDialogFragment();
-
                 Bundle bundle = new Bundle();
-                bundle.putString("textData", descriptions[position]);
-                bundle.putParcelable("imageData", images[position]);
+                bundle.putString("textData", items.get(position).getDisplayString());
+                bundle.putParcelable("imageData", BitmapFactory.decodeFile(items.get(position).getData(PicItem.ITEM_IMG_PATH)));
                 bundle.putInt("position", position);
                 deleteDialog.onCreate(bundle);
-
                 deleteDialog.show(fragmentManager, "Delete Image Data Dialog");
                 return true;
             }
         });
     }
 
-    private String readFile(final File file){
-
-        try {
-            FileReader fileReader = new FileReader(file);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-            StringBuffer stringBuffer = new StringBuffer();
-            String line;
-
-            while ((line = bufferedReader.readLine()) != null) {
-                stringBuffer.append(line + "\n");
+    private File[] getItemDataFiles(){
+        return itemDataDir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String filename) {
+                return dir.exists() && filename.endsWith(".pic");
             }
-
-            fileReader.close();
-            return stringBuffer.toString();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return "";
+        });
     }
+
 }
