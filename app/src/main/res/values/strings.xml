@@ -10,7 +10,7 @@
     <string name="btn_save_image_label">Save Image Data</string>
     <string name="pic_details_comment_placeholder">Kommentar</string>
 
-    <!-- Dialog Messages-->
+    <!-- Dialog Messages -->
     <string name="delete_message">Do you want to delete the image?</string>
     <string name="confirm">ok</string>
     <string name="cancel">cancel</string>
@@ -19,5 +19,6 @@
     <!-- Preference Keys -->
     <string name="settings_img_storage_path">de.uni_koeln.info.javamobile.img_storage_path</string>
     <string name="settings_data_storage_path">de.uni_koeln.info.javamobile.data_storage_path</string>
+    <string name="title_activity_full_screen">FullScreenActivity</string>
 
 </resources>
