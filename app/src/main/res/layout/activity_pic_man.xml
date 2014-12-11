@@ -5,6 +5,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Button
+        android:id="@+id/btn_location"
+        android:text="@string/button_label_location"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="showLocation"/>
+
+    <Button
         android:id="@+id/create_picture"
         android:text="@string/pic_button_label"
         android:layout_width="fill_parent"

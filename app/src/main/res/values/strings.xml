@@ -20,5 +20,6 @@
     <string name="settings_img_storage_path">de.uni_koeln.info.javamobile.img_storage_path</string>
     <string name="settings_data_storage_path">de.uni_koeln.info.javamobile.data_storage_path</string>
     <string name="title_activity_full_screen">FullScreenActivity</string>
+    <string name="button_label_location">show location</string>
 
 </resources>
