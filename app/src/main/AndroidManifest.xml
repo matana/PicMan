@@ -6,11 +6,15 @@
         android:name="android.hardware.camera"
         android:required="true" />
 
+    <!-- Allows an application to write to external storage. -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    <!-- LOCATION TRACKING VIA GPS or NETWORK-->
+    <!-- Allows an app to access precise location from location sources such as GPS, cell towers, and Wi-Fi. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- Allows applications to access information about networks. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Allows applications to open network sockets. -->
     <uses-permission android:name="android.permission.INTERNET" />
+
 
     <application
         android:allowBackup="true"
@@ -36,7 +40,7 @@
             android:parentActivityName=".activity.PicManActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.uni_koeln.phil_fak.spinfo.javamobile.picman.PicManActivity" />
+                android:value="de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.PicManActivity" />
         </activity>
         <activity
             android:name=".activity.FullScreenActivity"
@@ -46,6 +50,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.PicManActivity" />
         </activity>
+
     </application>
 
 </manifest>
