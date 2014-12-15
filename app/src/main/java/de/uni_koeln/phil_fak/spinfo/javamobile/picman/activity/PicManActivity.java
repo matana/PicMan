@@ -35,7 +35,6 @@ public class PicManActivity extends ActionBarActivity implements DeleteDialogFra
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i(getClass().getSimpleName(), "onCreate(Bundle savedInstanceState) called...");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pic_man);
@@ -93,13 +92,13 @@ public class PicManActivity extends ActionBarActivity implements DeleteDialogFra
 
                 Toast.makeText(this, "Location :: " + location, Toast.LENGTH_LONG).show();
 
-                Bundle extras = location.getExtras();
-                Iterator<String> iterator = extras.keySet().iterator();
-                while (iterator.hasNext()) {
-                    String key = iterator.next();
-                    Object obj = extras.get(key);
-                    Log.i(getClass().getSimpleName(), "key::" + key + " // value::" + obj);
-                }
+//                Bundle extras = location.getExtras();
+//                Iterator<String> iterator = extras.keySet().iterator();
+//                while (iterator.hasNext()) {
+//                    String key = iterator.next();
+//                    Object obj = extras.get(key);
+//                    Log.i(getClass().getSimpleName(), "key::" + key + " // value::" + obj);
+//                }
 
                 String LAT = location.getLatitude() + "";
                 String LON = location.getLongitude() + "";

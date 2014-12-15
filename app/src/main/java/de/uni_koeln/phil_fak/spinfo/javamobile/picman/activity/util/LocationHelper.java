@@ -131,7 +131,7 @@ public class LocationHelper {
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
-
+            Log.i(CLASS_NAME, "onStatusChanged() provider :: " + provider + " statusCode :: " + status);
         }
 
         @Override
