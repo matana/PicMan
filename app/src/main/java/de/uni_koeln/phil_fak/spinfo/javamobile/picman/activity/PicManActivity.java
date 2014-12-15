@@ -4,9 +4,10 @@ import android.app.DialogFragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,7 +15,10 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.Iterator;
+
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.R;
+import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.exception.LocationNotAvailableException;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.DataProvider;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.ListViewAdapter;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.LocationHelper;
@@ -31,6 +35,8 @@ public class PicManActivity extends ActionBarActivity implements DeleteDialogFra
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(getClass().getSimpleName(), "onCreate(Bundle savedInstanceState) called...");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pic_man);
 
@@ -39,17 +45,19 @@ public class PicManActivity extends ActionBarActivity implements DeleteDialogFra
         dataProvider.loadPicData(this, getFragmentManager(), listView);
 
         locationHelper = new LocationHelper(this);
+        locationHelper.registerLocationListener();
     }
 
     @Override
     protected void onPause() {
+        locationHelper.unregisterLocationListener();
         super.onPause();
-        //locationHelper.removeUpdates();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        locationHelper.registerLocationListener();
     }
 
     @Override
@@ -73,28 +81,48 @@ public class PicManActivity extends ActionBarActivity implements DeleteDialogFra
 
     public void startCamera(View view) {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-       if (intent.resolveActivity(getPackageManager()) != null) {
-          startActivityForResult(intent, 1);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(intent, 1);
         }
     }
 
     public void showLocation(View view) {
         if (locationHelper.hasProvider()) {
-            this.location = locationHelper.getLocation();
+            try {
+                location = locationHelper.getLocation();
 
-            if(location != null)
-                Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + location.getLatitude() + "\nLong: " + location.getLongitude(), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Location :: " + location, Toast.LENGTH_LONG).show();
+
+                Bundle extras = location.getExtras();
+                Iterator<String> iterator = extras.keySet().iterator();
+                while (iterator.hasNext()) {
+                    String key = iterator.next();
+                    Object obj = extras.get(key);
+                    Log.i(getClass().getSimpleName(), "key::" + key + " // value::" + obj);
+                }
+
+                String LAT = location.getLatitude() + "";
+                String LON = location.getLongitude() + "";
+
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse("http://maps.google.com/maps?z=12&t=m&q=loc:" + LAT + "+" + LON));
+                startActivity(intent);
+
+            } catch (LocationNotAvailableException e) {
+                e.printStackTrace();
+            }
         } else {
             locationHelper.showSettingsAlert();
         }
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            Bitmap picture = (Bitmap)extras.get("data");
+            Bitmap picture = (Bitmap) extras.get("data");
 
             Intent intent = new Intent(this, PicDetailsActivity.class);
             intent.putExtra("pic", picture);
@@ -110,7 +138,7 @@ public class PicManActivity extends ActionBarActivity implements DeleteDialogFra
     @Override
     public void onDialogPositiveClick(DialogFragment dialog, int position) {
         ListView listView = (ListView) findViewById(R.id.pic_list);
-        ((ListViewAdapter)listView.getAdapter()).remove(dataProvider.deleteItem(position));
+        ((ListViewAdapter) listView.getAdapter()).remove(dataProvider.deleteItem(position));
 
         Toaster.toastWrap(getApplicationContext(), "Item deleted.");
         dialog.dismiss();
