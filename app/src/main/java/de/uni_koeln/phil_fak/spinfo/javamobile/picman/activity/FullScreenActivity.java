@@ -3,7 +3,6 @@ package de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.R;
+import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.ImageHelper;
 
 public class FullScreenActivity extends Activity {
 
@@ -31,26 +31,25 @@ public class FullScreenActivity extends Activity {
         super.onStart();
 
         Intent intent = getIntent();
-        Bitmap pic = BitmapFactory.decodeFile(intent.getStringExtra("pic"));
+        String uri = intent.getStringExtra("uri");
         String desc = intent.getStringExtra("desc");
 
-        imageView.setImageBitmap(pic);
+        ImageHelper imageHelper = ImageHelper.getInstance();
+        Bitmap thumbnail = imageHelper.getWindowSizedBitmapFromPath(uri, getWindowManager());
+
+        imageView.setImageBitmap(thumbnail);
         text.setText(desc);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.full_screen, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;

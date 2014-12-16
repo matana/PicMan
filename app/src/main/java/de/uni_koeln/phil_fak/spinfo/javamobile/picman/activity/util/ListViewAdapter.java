@@ -24,6 +24,7 @@ public class ListViewAdapter extends ArrayAdapter<PicItem> {
     private List<PicItem> items;
 
     public ListViewAdapter(Context context, List<PicItem> items) {
+
         super(context, R.layout.pic_list_item, items);
 
         this.context = context;
@@ -40,17 +41,16 @@ public class ListViewAdapter extends ArrayAdapter<PicItem> {
         ImageView imageView = (ImageView) view.findViewById(R.id.pic_thumb);
         TextView textView = (TextView) view.findViewById(R.id.pic_desc);
 
-        Bitmap img;
+        Bitmap thumbnail =  BitmapFactory.decodeFile(items.get(position).getData(PicItem.ITEM_THUMBNAIL_PATH));
         String desc = items.get(position).getDisplayString();
-        if ((img = BitmapFactory.decodeFile(items.get(position).getData(PicItem.ITEM_IMG_PATH))) == null) {
-            img = BitmapFactory.decodeResource(context.getResources(), R.drawable.error);
+        if (thumbnail == null) {
+            thumbnail = BitmapFactory.decodeResource(context.getResources(), R.drawable.error);
             desc += "\n(image deleted!)";
         }
 
-        imageView.setImageBitmap(img);
+        imageView.setImageBitmap(thumbnail);
         textView.setText(desc);
 
-        //Log.d(getClass().getSimpleName(), position + ": " + img[position] + " " + desc[position]);
         return view;
     }
 

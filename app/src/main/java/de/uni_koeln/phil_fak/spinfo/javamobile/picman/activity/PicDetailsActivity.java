@@ -12,15 +12,14 @@ import android.widget.TextView;
 
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.R;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.ImageHelper;
-import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.StorageManager;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.TimeStamper;
-import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.Toaster;
 
 
 public class PicDetailsActivity extends ActionBarActivity {
 
-    private Bitmap pic;
+    private Bitmap thumbnail;
     private String pic_details;
+    private String uri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,50 +27,38 @@ public class PicDetailsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_pic_details);
 
         Intent intent = getIntent();
-        pic = intent.getParcelableExtra("pic");
+        uri = intent.getStringExtra("uri");
 
         ImageView imageView = (ImageView)findViewById(R.id.image_view);
-        imageView.setImageBitmap(pic);
+        ImageHelper imageHelper = ImageHelper.getInstance();
+        thumbnail = imageHelper.getThumbnailBitmapFromPath(uri);
+        imageView.setImageBitmap(thumbnail);
 
         TextView text = (TextView)findViewById(R.id.pic_details_timestamp);
         pic_details = TimeStamper.getInstance().generateTimestamp(true);
-
         text.setText(pic_details);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.pic_details, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
     public void saveImage(View view) {
         ImageHelper imageHelper = ImageHelper.getInstance();
-        StorageManager storageManager = new StorageManager(getApplicationContext());
-        imageHelper.saveImageData(getApplicationContext(),
-                storageManager,
-                getPicture(),
-                getText(),
-                TimeStamper.getInstance().generateTimestamp(true));
+        imageHelper.saveImageData(getApplicationContext(), thumbnail,
+                getText(), TimeStamper.getInstance().generateTimestamp(true), uri);
         Intent intent = new Intent(this, PicManActivity.class);
         startActivity(intent);
-        Toaster.toastWrap(getApplicationContext(), "Image saved...");
         finish();
-    }
-
-    public Bitmap getPicture() {
-        return pic;
     }
 
     public String getText() {

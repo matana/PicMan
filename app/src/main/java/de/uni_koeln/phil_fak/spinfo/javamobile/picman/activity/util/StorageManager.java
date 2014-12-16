@@ -1,22 +1,26 @@
 package de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util;
 
-import android.app.Activity;
+
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Environment;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by bkiss on 11.11.2014.
  */
 public class StorageManager {
 
-    Context context;
+    private static StorageManager instance;
 
-    public StorageManager(Context context){
-        this.context = context.getApplicationContext();
+    private StorageManager() {
+        // Utility class.
+    }
+
+    public static StorageManager getInstance() {
+        if(instance == null)
+            instance = new StorageManager();
+        return instance;
     }
 
     public File createPublicStorageDir(){
@@ -26,7 +30,7 @@ public class StorageManager {
         return dir;
     }
 
-    public File createPrivateStorageDir(){
+    public File createPrivateStorageDir(Context context ){
         File dir = new File(context.getExternalFilesDir(null), "PicMan");
         if (!dir.exists()) dir.mkdirs();
         return dir;

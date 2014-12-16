@@ -15,6 +15,8 @@ import java.io.FilenameFilter;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.DeleteDialogFragment;
@@ -26,12 +28,10 @@ public class DataProvider {
 
     private ListViewAdapter adapter;
     private final File itemDataDir;
+    private List<PicItem> items = new ArrayList<>();
 
-    List<PicItem> items;
-
-    public DataProvider(StorageManager storageManager) {
-        items = new ArrayList<PicItem>();
-        itemDataDir = storageManager.createPrivateStorageDir();
+    public DataProvider(final Context context) {
+        itemDataDir = StorageManager.getInstance().createPrivateStorageDir(context);
     }
 
     public void loadPicData(final Context context, final FragmentManager fragmentManager, ListView listView) {
@@ -43,7 +43,15 @@ public class DataProvider {
     }
 
     private void loadPicData(final Context context, final FragmentManager fragmentManager, ListView listView, File[] dataFiles) {
-        Arrays.sort(dataFiles);
+
+        Arrays.sort(dataFiles, new Comparator<File>() {
+            @Override
+            public int compare(File lhs, File rhs) {
+                Date d1 = new Date(lhs.lastModified());
+                Date d2 = new Date(rhs.lastModified());
+                return d2.compareTo(d1);
+            }
+        });
 
         for (File f : dataFiles){
             try {
@@ -58,19 +66,21 @@ public class DataProvider {
     }
 
     public PicItem deleteItem(int pos){
+
         PicItem item = items.get(pos);
         File itemFile = new File(item.getData(PicItem.ITEM_PATH));
-        File imgFile = new File(item.getData(PicItem.ITEM_IMG_PATH));
+        File imgFile = new File(item.getData(PicItem.ITEM_ID));
+        File thumbFile = new File(item.getData(PicItem.ITEM_THUMBNAIL_PATH));
         if (imgFile.exists()) imgFile.delete();
         if (itemFile.exists()) itemFile.delete();
+        if (thumbFile.exists()) thumbFile.delete();
         return item;
     }
 
     private PicItem deserializeItem(File itemFile){
-        ObjectInputStream ois;
         PicItem item = null;
         try {
-            ois = new ObjectInputStream(new FileInputStream(itemFile));
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(itemFile));
             item = (PicItem) ois.readObject();
             ois.close();
         } catch (Exception e) {
@@ -87,10 +97,9 @@ public class DataProvider {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(context, FullScreenActivity.class);
-                intent.putExtra("pic",items.get(position).getData(PicItem.ITEM_IMG_PATH));
+                intent.putExtra("uri", items.get(position).getData(PicItem.ITEM_ID));
                 intent.putExtra("desc",items.get(position).getDisplayString());
                 context.startActivity(intent);
-                //Toaster.toastWrap(context, parent.getAdapter().getItem(position).toString());
             }
         });
 
@@ -98,11 +107,11 @@ public class DataProvider {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Toaster.toastWrap(context, position + "");
+
                 DeleteDialogFragment deleteDialog = new DeleteDialogFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("textData", items.get(position).getDisplayString());
-                bundle.putParcelable("imageData", BitmapFactory.decodeFile(items.get(position).getData(PicItem.ITEM_IMG_PATH)));
+                bundle.putParcelable("imageData", BitmapFactory.decodeFile(items.get(position).getData(PicItem.ITEM_THUMBNAIL_PATH)));
                 bundle.putInt("position", position);
                 deleteDialog.onCreate(bundle);
                 deleteDialog.show(fragmentManager, "Delete Image Data Dialog");
