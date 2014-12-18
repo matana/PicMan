@@ -9,8 +9,8 @@ import java.util.Map;
 
 public class PicItem implements Serializable{
 
-    public static final String ITEM_ID                   = "item_id";
     public static final String ITEM_PATH                 = "item_path";
+    public static final String ITEM_IMAGE_PATH           = "item_image_path";
     public static final String ITEM_THUMBNAIL_PATH       = "item_thumbnail_path";
     public static final String ITEM_COMMENT              = "item_comment";
     public static final String ITEM_LOCATION_LATITUDE    = "item_location_latitude";
@@ -19,9 +19,9 @@ public class PicItem implements Serializable{
 
     private Map<String, String> data = new HashMap<>();
 
-    public PicItem(String uri, String objectPath, String thumbnailPath, String comment, String date){
-        data.put(ITEM_ID, uri);
-        data.put(ITEM_PATH, objectPath);
+    public PicItem(String itemPath, String imagePath, String thumbnailPath, String comment, String date){
+        data.put(ITEM_PATH, itemPath);
+        data.put(ITEM_IMAGE_PATH, imagePath);
         data.put(ITEM_THUMBNAIL_PATH, thumbnailPath);
         data.put(ITEM_COMMENT, comment);
        // data.put(ITEM_LOCATION_LATITUDE, String.valueOf(location.getLatitude()));
@@ -40,7 +40,7 @@ public class PicItem implements Serializable{
 
     @Override
     public String toString(){
-        return "[PicItem " + data.get(ITEM_ID) + "] " + data.get(ITEM_DATE) + ": " + data.get(ITEM_COMMENT);
+        return "[PicItem " + data.get(ITEM_PATH) + "] " + data.get(ITEM_DATE) + ": " + data.get(ITEM_COMMENT);
     }
 
 }
