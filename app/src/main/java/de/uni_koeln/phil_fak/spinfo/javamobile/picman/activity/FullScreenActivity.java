@@ -1,59 +1,77 @@
 package de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity;
 
-import android.app.Activity;
+
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
+
+import java.util.List;
 
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.R;
-import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.ImageHelper;
+import de.uni_koeln.phil_fak.spinfo.javamobile.picman.data.PicItem;
 
-public class FullScreenActivity extends Activity {
 
-    private ImageView imageView;
-    private TextView text;
+public class FullScreenActivity extends FragmentActivity {
+
+    private ViewPager mPager;
+    private PagerAdapter mPagerAdapter;
+    private List<PicItem> items;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_screen);
-        imageView = (ImageView)findViewById(R.id.fullscreen_image_view);
-        text = (TextView)findViewById(R.id.fullscreen_text_view);
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         Intent intent = getIntent();
-        String uri = intent.getStringExtra("uri");
-        String desc = intent.getStringExtra("desc");
+        items = (List<PicItem>) intent.getSerializableExtra("items");
 
-        ImageHelper imageHelper = ImageHelper.getInstance();
-        Bitmap thumbnail = imageHelper.getWindowSizedBitmapFromPath(uri, getWindowManager());
-
-        imageView.setImageBitmap(thumbnail);
-        text.setText(desc);
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.full_screen, menu);
-        return true;
+        // Instantiate a ViewPager and a PagerAdapter.
+        mPager = (ViewPager) findViewById(R.id.pager);
+        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        mPager.setAdapter(mPagerAdapter);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    //Adapter
+    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+        public ScreenSlidePagerAdapter(FragmentManager fm) {
+            super(fm);
         }
-        return super.onOptionsItemSelected(item);
+
+        @Override
+        public Fragment getItem(int position) {
+
+            Fragment f = new ScreenSlidePageFragment();
+
+            //ImageView imageView = (ImageView) f.getView().findViewById(R.id.full_screen_image_view);
+            //imageView.setImageBitmap(BitmapFactory.decodeFile(items.get(position).getData(PicItem.ITEM_IMAGE_PATH)));
+
+            Bundle b = new Bundle();
+            b.putParcelable("img", BitmapFactory.decodeFile(items.get(position).getData(PicItem.ITEM_IMAGE_PATH)));
+            b.putString("text", items.get(position).getDisplayString());
+            f.setArguments(b);
+
+            return f;
+        }
+
+        //@Override
+        //public Object instantiateItem(ViewGroup container, int position) {}
+
+        @Override
+        public int getCount() {
+            return items.size();
+        }
     }
 }

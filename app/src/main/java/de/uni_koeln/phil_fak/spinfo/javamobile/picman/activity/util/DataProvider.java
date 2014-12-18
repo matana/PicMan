@@ -28,7 +28,7 @@ public class DataProvider {
 
     private ListViewAdapter adapter;
     private final File itemDataDir;
-    private List<PicItem> items = new ArrayList<>();
+    private ArrayList<PicItem> items = new ArrayList<>();
 
     public DataProvider(final Context context) {
         itemDataDir = StorageManager.getInstance().createPrivateStorageDir(context);
@@ -97,8 +97,7 @@ public class DataProvider {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(context, FullScreenActivity.class);
-                intent.putExtra("uri", items.get(position).getData(PicItem.ITEM_IMAGE_PATH));
-                intent.putExtra("desc",items.get(position).getDisplayString());
+                intent.putExtra("items", items);
                 context.startActivity(intent);
             }
         });

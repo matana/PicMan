@@ -21,5 +21,6 @@
     <string name="settings_data_storage_path">de.uni_koeln.info.javamobile.data_storage_path</string>
     <string name="title_activity_full_screen">FullScreenActivity</string>
     <string name="button_label_location">show location</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
