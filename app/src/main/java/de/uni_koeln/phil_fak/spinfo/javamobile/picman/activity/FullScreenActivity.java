@@ -1,6 +1,5 @@
 package de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity;
 
-
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -10,8 +9,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import java.util.List;
 
@@ -55,9 +52,6 @@ public class FullScreenActivity extends FragmentActivity {
 
             Fragment f = new ScreenSlidePageFragment();
 
-            //ImageView imageView = (ImageView) f.getView().findViewById(R.id.full_screen_image_view);
-            //imageView.setImageBitmap(BitmapFactory.decodeFile(items.get(position).getData(PicItem.ITEM_IMAGE_PATH)));
-
             Bundle b = new Bundle();
             b.putParcelable("img", BitmapFactory.decodeFile(items.get(position).getData(PicItem.ITEM_IMAGE_PATH)));
             b.putString("text", items.get(position).getDisplayString());
@@ -65,9 +59,6 @@ public class FullScreenActivity extends FragmentActivity {
 
             return f;
         }
-
-        //@Override
-        //public Object instantiateItem(ViewGroup container, int position) {}
 
         @Override
         public int getCount() {
