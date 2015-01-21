@@ -130,6 +130,12 @@ public class PicManActivity extends ActionBarActivity implements DeleteDialogFra
     }
 
 
+    public void showMap(View view){
+        Intent intent = new Intent(this, MapActivity.class);
+        startActivity(intent);
+    }
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
