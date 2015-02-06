@@ -12,6 +12,12 @@
         android:onClick="showLocation"/>
 
     <Button
+        android:text="@string/button_label_map"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="showMap"/>
+
+    <Button
         android:id="@+id/create_picture"
         android:text="@string/pic_button_label"
         android:layout_width="fill_parent"

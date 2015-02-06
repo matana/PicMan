@@ -15,6 +15,7 @@ import android.widget.ListView;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.R;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.exception.LocationNotAvailableException;
@@ -24,6 +25,7 @@ import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.ListViewAdap
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.LocationHelper;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.StorageManager;
 import de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.util.Toaster;
+import de.uni_koeln.phil_fak.spinfo.javamobile.picman.data.PicItem;
 
 public class PicManActivity extends ActionBarActivity implements DeleteDialogFragment.DeleteDialogFragmentListener {
 
@@ -126,6 +128,12 @@ public class PicManActivity extends ActionBarActivity implements DeleteDialogFra
         } else {
             locationHelper.showSettingsAlert();
         }
+    }
+
+    public void showMap(View view){
+        Intent intent = new Intent(this, MapActivity.class);
+        intent.putExtra("items", new ArrayList<PicItem>(dataProvider.getItems()));
+        startActivity(intent);
     }
 
 

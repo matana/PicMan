@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<fragment xmlns:a="http://schemas.android.com/apk/res/android"
+        a:id="@+id/map"
+        a:layout_width="match_parent"
+        a:layout_height="match_parent"
+        a:name="com.google.android.gms.maps.MapFragment"/>
+
+

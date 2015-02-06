@@ -5,6 +5,9 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
     <!-- Allows an application to write to external storage. -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -14,7 +17,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- Allows applications to open network sockets. -->
     <uses-permission android:name="android.permission.INTERNET" />
-
 
     <application
         android:allowBackup="true"
@@ -50,6 +52,23 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.PicManActivity" />
         </activity>
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyC6mQ8U62eUkZNIFy-Trl_SiKQOXJFfndk" />
+
+        <activity
+            android:name=".activity.MapActivity"
+            android:label="@string/title_activity_map"
+            android:parentActivityName=".activity.PicManActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.uni_koeln.phil_fak.spinfo.javamobile.picman.activity.PicManActivity" />
+        </activity>
+
+
+
+
 
     </application>
 

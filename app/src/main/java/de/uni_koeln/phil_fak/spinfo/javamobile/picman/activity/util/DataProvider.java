@@ -129,4 +129,8 @@ public class DataProvider {
         });
     }
 
+    public List<PicItem> getItems() {
+        return items;
+    }
+
 }
