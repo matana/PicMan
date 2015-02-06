@@ -18,6 +18,7 @@
     <!-- Allows applications to open network sockets. -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -55,7 +56,7 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyC6mQ8U62eUkZNIFy-Trl_SiKQOXJFfndk" />
+            android:value="MAPS_V2_API_KEY" />
 
         <activity
             android:name=".activity.MapActivity"

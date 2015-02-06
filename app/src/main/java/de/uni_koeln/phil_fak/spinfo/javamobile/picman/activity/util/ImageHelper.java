@@ -68,7 +68,7 @@ public class ImageHelper {
         return "IMG_" + TimeStamper.getInstance().generateTimestamp(false);
     }
 
-    public void saveImageData(Context context, Bitmap thumbnail, String text, String date, String uri) {
+    public void saveImageData(Context context, String id, String fullImageURI, Bitmap thumbnail, String text, String date) {
 
         StorageManager storageManager = StorageManager.getInstance();
 
@@ -85,22 +85,19 @@ public class ImageHelper {
             File dataDir = storageManager.createPrivateStorageDir(context);
             dataDir.mkdirs();
 
-            String uriWithNoExtension = uri.substring(0, uri.lastIndexOf("."));
+            String uriWithNoExtension = fullImageURI.substring(0, fullImageURI.lastIndexOf("."));
             thumbnailPath = uriWithNoExtension + "-thumbnail.jpg";
-            String[] split = uriWithNoExtension.split("/");
-            picItemPath = split[split.length - 1] + ".pic";
-            Log.i(getClass().getSimpleName(), split[split.length - 1]);
+            picItemPath = dataDir.getAbsolutePath() + "/" + id + ".pic";
 
-
-            Log.d(getClass().getSimpleName(), "URI :: " + uri);
+            Log.i(getClass().getSimpleName(), picItemPath);
+            Log.d(getClass().getSimpleName(), "URI :: " + fullImageURI);
             Log.d(getClass().getSimpleName(), "OBJECT_PATH :: " + picItemPath);
             Log.d(getClass().getSimpleName(), "THUMBNAIL :: " + thumbnailPath);
 
             thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, new FileOutputStream(thumbnailPath));
 
-            PicItem picItem = new PicItem(uri, picItemPath, thumbnailPath, text, date);
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(
-                    new File(dataDir, picItemPath)));
+            PicItem picItem = new PicItem(picItemPath, fullImageURI, thumbnailPath, text, date);
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(picItemPath));
             oos.writeObject(picItem);
             oos.close();
 

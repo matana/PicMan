@@ -28,7 +28,7 @@ public class DataProvider {
 
     private ListViewAdapter adapter;
     private final File itemDataDir;
-    private List<PicItem> items = new ArrayList<>();
+    private ArrayList<PicItem> items = new ArrayList<>();
 
     public DataProvider(final Context context) {
         itemDataDir = StorageManager.getInstance().createPrivateStorageDir(context);
@@ -69,7 +69,7 @@ public class DataProvider {
 
         PicItem item = items.get(pos);
         File itemFile = new File(item.getData(PicItem.ITEM_PATH));
-        File imgFile = new File(item.getData(PicItem.ITEM_ID));
+        File imgFile = new File(item.getData(PicItem.ITEM_IMAGE_PATH));
         File thumbFile = new File(item.getData(PicItem.ITEM_THUMBNAIL_PATH));
         if (imgFile.exists()) imgFile.delete();
         if (itemFile.exists()) itemFile.delete();
@@ -97,8 +97,7 @@ public class DataProvider {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(context, FullScreenActivity.class);
-                intent.putExtra("uri", items.get(position).getData(PicItem.ITEM_ID));
-                intent.putExtra("desc",items.get(position).getDisplayString());
+                intent.putExtra("items", items);
                 context.startActivity(intent);
             }
         });

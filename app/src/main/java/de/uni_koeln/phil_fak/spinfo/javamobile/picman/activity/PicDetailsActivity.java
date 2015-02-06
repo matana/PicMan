@@ -54,8 +54,12 @@ public class PicDetailsActivity extends ActionBarActivity {
 
     public void saveImage(View view) {
         ImageHelper imageHelper = ImageHelper.getInstance();
-        imageHelper.saveImageData(getApplicationContext(), thumbnail,
-                getText(), TimeStamper.getInstance().generateTimestamp(true), uri);
+        imageHelper.saveImageData(getApplicationContext(),
+                TimeStamper.getInstance().generateTimestamp(false),
+                uri,
+                thumbnail,
+                getText(),
+                TimeStamper.getInstance().generateTimestamp(true));
         Intent intent = new Intent(this, PicManActivity.class);
         startActivity(intent);
         finish();

@@ -3,18 +3,18 @@
 
     <string name="app_name">PicMan</string>
     <string name="pic_button_label">Create Picture</string>
-    <string name="hello_world">Hello World!</string>
+    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_pic_man">PicMan</string>
     <string name="title_activity_pic_details">PicDetails</string>
     <string name="btn_save_image_label">Save Image Data</string>
-    <string name="pic_details_comment_placeholder">Comment</string>
+    <string name="pic_details_comment_placeholder">Kommentar</string>
 
     <!-- Dialog Messages -->
     <string name="delete_message">Do you want to delete the image?</string>
-    <string name="confirm">Ok</string>
-    <string name="cancel">Cancel</string>
-    <string name="edit">Edit</string>
+    <string name="confirm">ok</string>
+    <string name="cancel">cancel</string>
+    <string name="edit">edit</string>
 
     <!-- Preference Keys -->
     <string name="settings_img_storage_path">de.uni_koeln.info.javamobile.img_storage_path</string>
